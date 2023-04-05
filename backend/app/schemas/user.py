@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 
+from app.schemas.post import Post
 
 class UserBase(BaseModel):
     first_name: Optional[str]
@@ -23,6 +24,7 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: Optional[int] = None
+    posts: List[Post] = []
 
     class Config:
         orm_mode = True

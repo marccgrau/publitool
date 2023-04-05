@@ -1,33 +1,25 @@
-from typing import Sequence
-
+from typing import Sequence, List, Optional
+import datetime
 from pydantic import BaseModel
 
+from app.schemas.post_image import Image, ImageCreate, ImageUpdate
+
 class PostBase(BaseModel):
-    submitter_id: int
-    image: bytes
     text: str
 
 class PostCreate(PostBase):
-    pass
+    user_id: int
+    images: List[ImageCreate]
 
-class PostUpdate(PostBase):
-    id: int
-
-class PostUpdateText(BaseModel):
-    id: int
-    text: str
-
-class PostUpdateImage(BaseModel):
-    id: int
-    image: bytes
-    
-
-# Properties shared by models stored in DB
 class PostInDBBase(PostBase):
     id: int
-
+    created_at: datetime.datetime
+    user_id: int
+    images: List[Image]
+    
     class Config:
         orm_mode = True
+
 
 # Properties to return to client
 class Post(PostInDBBase):
@@ -37,6 +29,10 @@ class Post(PostInDBBase):
 # Properties properties stored in DB
 class PostInDB(PostInDBBase):
     pass
+
+class PostUpdate(Post):
+    text: Optional[str]
+    images: Optional[List[ImageUpdate]]  
 
 
 class PostSearchResults(BaseModel):
