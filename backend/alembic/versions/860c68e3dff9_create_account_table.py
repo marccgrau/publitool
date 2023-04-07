@@ -30,18 +30,17 @@ def upgrade() -> None:
     op.create_index(op.f("ix_user_email"), "user", ["email"], unique=False)
     op.create_index(op.f("ix_user_id"), "user", ["id"], unique=False)
     op.create_table(
-        "post",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("submitter_id", sa.Integer(), nullable=True),
-        sa.Column("image", sa.String(length=256), nullable=True),
-        sa.Column("text", sa.String(length=256), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["submitter_id"],
-            ["user.id"],
-        ),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index(op.f("ix_post_id"), "post", ["id"], unique=False)
+        'images',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=True),
+        sa.Column('image_name', sa.String(256), nullable=True),
+        sa.Column('image_url', sa.String(256), nullable=True),
+        sa.Column('is_deleted', sa.Boolean(), nullable=False, default=False),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+        sa.PrimaryKeyConstraint('id'),
+        )
+    op.create_index('idx_images_user_id', 'images', ['user_id'], unique=False)
+
 
 
 
@@ -49,5 +48,5 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_user_id"), table_name="user")
     op.drop_index(op.f("ix_user_email"), table_name="user")
     op.drop_table("user")
-    op.drop_index(op.f("ix_post_id"), table_name="post")
-    op.drop_table("post")
+    op.drop_index('idx_images_user_id', 'images')
+    op.drop_table('images')

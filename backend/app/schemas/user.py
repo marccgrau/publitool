@@ -1,14 +1,14 @@
 from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
-
-from app.schemas.post import Post
+from app.schemas.image import Image
 
 class UserBase(BaseModel):
     first_name: Optional[str]
     surname: Optional[str]
     email: Optional[EmailStr] = None
     is_superuser: bool = False
+    images: Optional[List[Image]] = []
 
 
 # Properties to receive via API on creation
@@ -24,7 +24,6 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: Optional[int] = None
-    posts: List[Post] = []
 
     class Config:
         orm_mode = True
